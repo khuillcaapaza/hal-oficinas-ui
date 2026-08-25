@@ -21,13 +21,13 @@ import ModalConfirmar, { type ConfirmacionState } from "./ModalConfirmar";
  * una sección concreta.
  */
 export default function GestorEnlaces({
-  slug,
+  oficinaRef,
   seccionId,
   subcarpetaDefault,
   enlaces,
   onCambio,
 }: {
-  slug: string;
+  oficinaRef: string;
   seccionId: number | null;
   subcarpetaDefault: string;
   enlaces: Enlace[];
@@ -68,7 +68,7 @@ export default function GestorEnlaces({
         return;
       }
       try {
-        await crearEnlace(slug, {
+        await crearEnlace(oficinaRef, {
           seccion_id: seccionId,
           titulo: titulo.trim(),
           tipo: "enlace",
@@ -98,7 +98,7 @@ export default function GestorEnlaces({
     try {
       const res = await subirArchivoOficina(carpeta, archivo, (p) => setProgreso(p));
       try {
-        await crearEnlace(slug, {
+        await crearEnlace(oficinaRef, {
           seccion_id: seccionId,
           titulo: titulo.trim(),
           tipo: "archivo",
@@ -129,7 +129,7 @@ export default function GestorEnlaces({
       mensaje: `¿Eliminar "${label}"? Esta acción no se puede deshacer.`,
       onConfirmar: async () => {
         try {
-          await eliminarEnlace(slug, id);
+          await eliminarEnlace(oficinaRef, id);
           toast.ok("Enlace eliminado.");
           await onCambio();
         } catch (err) {
@@ -150,7 +150,7 @@ export default function GestorEnlaces({
       return;
     }
     try {
-      await actualizarEnlace(slug, en.id, { titulo: editTitulo.trim(), publicado: en.publicado });
+      await actualizarEnlace(oficinaRef, en.id, { titulo: editTitulo.trim(), publicado: en.publicado });
       toast.ok("Enlace actualizado.");
       setEditId(null);
       await onCambio();
@@ -161,7 +161,7 @@ export default function GestorEnlaces({
 
   async function alternarPublicado(en: Enlace) {
     try {
-      await actualizarEnlace(slug, en.id, { titulo: en.titulo, publicado: !en.publicado });
+      await actualizarEnlace(oficinaRef, en.id, { titulo: en.titulo, publicado: !en.publicado });
       toast.ok(en.publicado ? "Enlace ocultado." : "Enlace visible.");
       await onCambio();
     } catch (err) {

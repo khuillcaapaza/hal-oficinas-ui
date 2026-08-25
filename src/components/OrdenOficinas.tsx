@@ -26,7 +26,7 @@ export default function OrdenOficinas({ onVolver }: { onVolver: () => void }) {
         const { items } = await fetchOficinas(1, 100);
         if (alive) {
           setItems(items);
-          setOrdenInicial(items.map((it) => it.slug));
+          setOrdenInicial(items.map((it) => it.uuid || it.slug));
         }
       } catch (err) {
         toast.error((err as Error).message);
@@ -41,7 +41,7 @@ export default function OrdenOficinas({ onVolver }: { onVolver: () => void }) {
 
   const hayCambios = useMemo(() => {
     if (items.length !== ordenInicial.length) return false;
-    return items.some((it, idx) => it.slug !== ordenInicial[idx]);
+    return items.some((it, idx) => (it.uuid || it.slug) !== ordenInicial[idx]);
   }, [items, ordenInicial]);
 
   function mover(origen: number, destino: number) {
@@ -57,8 +57,8 @@ export default function OrdenOficinas({ onVolver }: { onVolver: () => void }) {
   async function guardar() {
     setGuardando(true);
     try {
-      await reordenarOficinas(items.map((it, idx) => ({ slug: it.slug, orden: idx })));
-      setOrdenInicial(items.map((it) => it.slug));
+      await reordenarOficinas(items.map((it, idx) => ({ uuid: it.uuid || it.slug, orden: idx })));
+      setOrdenInicial(items.map((it) => it.uuid || it.slug));
       toast.ok("Orden guardado.");
     } catch (err) {
       toast.error((err as Error).message);
@@ -94,7 +94,7 @@ export default function OrdenOficinas({ onVolver }: { onVolver: () => void }) {
         <ul className="lista-orden">
           {items.map((it, idx) => (
             <li
-              key={it.slug}
+              key={it.uuid || it.slug}
               className={`lista-orden__item${arrastre === idx ? " es-arrastrando" : ""}`}
               draggable
               onDragStart={() => setArrastre(idx)}

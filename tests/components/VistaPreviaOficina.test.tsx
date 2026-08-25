@@ -23,6 +23,7 @@ const form = (over: Partial<OficinaInput> = {}): OficinaInput => ({
 
 const seccion = (over: Partial<Seccion> = {}): Seccion => ({
   id: 1,
+  uuid: "sec-uuid-1",
   slug: "auditoria",
   titulo: "Auditoría",
   descripcion: "Documentos de auditoría",

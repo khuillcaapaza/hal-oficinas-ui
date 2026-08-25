@@ -15,26 +15,26 @@ interface Props {
  * Shell del panel de administración de oficinas. La autenticación y la gestión
  * de usuarios viven en el servicio central hal-auth; aquí solo se administran
  * las oficinas. El estado (lista/editor/orden) se refleja en la URL
- * (?editar=<slug> | ?nuevo=1 | ?ordenar=1) mediante la History API.
+ * (?editar=<uuid> | ?nuevo=1 | ?ordenar=1) mediante la History API.
  */
 export default function AdminPanel({ usuario, onLogout }: Props) {
   const [vista, setVista] = useState<"lista" | "editor" | "orden">("lista");
-  const [slugEditando, setSlugEditando] = useState<string | null>(null);
+  const [refEditando, setRefEditando] = useState<string | null>(null);
 
   const aplicarDesdeUrl = useCallback(() => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("editar");
     if (slug) {
-      setSlugEditando(slug);
+      setRefEditando(slug);
       setVista("editor");
     } else if (params.get("ordenar")) {
-      setSlugEditando(null);
+      setRefEditando(null);
       setVista("orden");
     } else if (params.get("nuevo")) {
-      setSlugEditando("");
+      setRefEditando("");
       setVista("editor");
     } else {
-      setSlugEditando(null);
+      setRefEditando(null);
       setVista("lista");
     }
   }, []);
@@ -51,25 +51,25 @@ export default function AdminPanel({ usuario, onLogout }: Props) {
   }, []);
 
   function nuevo() {
-    setSlugEditando("");
+    setRefEditando("");
     setVista("editor");
     navegar("nuevo=1");
   }
 
   function ordenar() {
-    setSlugEditando(null);
+    setRefEditando(null);
     setVista("orden");
     navegar("ordenar=1");
   }
 
-  function editar(slug: string) {
-    setSlugEditando(slug);
+  function editar(ref: string) {
+    setRefEditando(ref);
     setVista("editor");
-    navegar(`editar=${encodeURIComponent(slug)}`);
+    navegar(`editar=${encodeURIComponent(ref)}`);
   }
 
   function volverALista() {
-    setSlugEditando(null);
+    setRefEditando(null);
     setVista("lista");
     navegar("");
   }
@@ -103,7 +103,7 @@ export default function AdminPanel({ usuario, onLogout }: Props) {
           <OrdenOficinas onVolver={volverALista} />
         ) : (
           <EditorOficina
-            slug={slugEditando ?? ""}
+            refId={refEditando ?? ""}
             onVolver={volverALista}
             onCreado={editar}
           />

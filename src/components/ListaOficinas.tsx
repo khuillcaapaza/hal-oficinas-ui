@@ -26,7 +26,7 @@ export default function ListaOficinas({
   onOrdenar,
 }: {
   onNuevo: () => void;
-  onEditar: (slug: string) => void;
+  onEditar: (ref: string) => void;
   onOrdenar: () => void;
 }) {
   const toast = useToast();
@@ -70,13 +70,13 @@ export default function ListaOficinas({
     setPagina(p);
   }, []);
 
-  function eliminar(slug: string, titulo: string) {
+  function eliminar(ref: string, titulo: string) {
     setConfirmacion({
       titulo: "Eliminar oficina",
       mensaje: `¿Eliminar la oficina "${titulo}" y todo su contenido? Esta acción no se puede deshacer.`,
       onConfirmar: async () => {
         try {
-          await eliminarOficina(slug);
+          await eliminarOficina(ref);
           toast.ok("Oficina eliminada.");
           const meta = await cargar(pagina);
           if (meta && pagina > meta.total_pages) irAPagina(meta.total_pages);
@@ -113,7 +113,7 @@ export default function ListaOficinas({
       ) : (
         <div className="grid-cronogramas">
           {items.map((o) => (
-            <article key={o.slug} className="area-item">
+            <article key={o.uuid || o.slug} className="area-item">
               <div className="area-item__head">
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <h3 style={{ margin: 0 }}>{o.titulo}</h3>
@@ -126,7 +126,7 @@ export default function ListaOficinas({
                   <button
                     type="button"
                     className="boton boton--secundario boton--sm"
-                    onClick={() => onEditar(o.slug)}
+                    onClick={() => onEditar(o.uuid || o.slug)}
                   >
                     Editar
                   </button>
@@ -134,7 +134,7 @@ export default function ListaOficinas({
                     type="button"
                     className="boton-icono"
                     title="Eliminar oficina"
-                    onClick={() => eliminar(o.slug, o.titulo)}
+                    onClick={() => eliminar(o.uuid || o.slug, o.titulo)}
                   >
                     ✕
                   </button>

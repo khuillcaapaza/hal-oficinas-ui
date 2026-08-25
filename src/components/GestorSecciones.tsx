@@ -12,12 +12,12 @@ import ModalConfirmar, { type ConfirmacionState } from "./ModalConfirmar";
  * borrar secciones, y administra los enlaces de cada una vía GestorEnlaces.
  */
 export default function GestorSecciones({
-  slug,
+  oficinaRef,
   secciones,
   enlaces,
   onCambio,
 }: {
-  slug: string;
+  oficinaRef: string;
   secciones: Seccion[];
   enlaces: Enlace[];
   onCambio: () => Promise<void> | void;
@@ -43,7 +43,7 @@ export default function GestorSecciones({
       return;
     }
     try {
-      await crearSeccion(slug, {
+      await crearSeccion(oficinaRef, {
         titulo: nuevoTitulo.trim(),
         descripcion: "",
         icono: "documents",
@@ -72,7 +72,7 @@ export default function GestorSecciones({
       return;
     }
     try {
-      await actualizarSeccion(slug, sec.id, {
+      await actualizarSeccion(oficinaRef, sec.id, {
         slug: sec.slug,
         titulo: editTitulo.trim(),
         descripcion: editDesc.trim(),
@@ -93,7 +93,7 @@ export default function GestorSecciones({
       mensaje: `¿Eliminar la sección "${sec.titulo}" y todos sus enlaces? Esta acción no se puede deshacer.`,
       onConfirmar: async () => {
         try {
-          await eliminarSeccion(slug, sec.id);
+          await eliminarSeccion(oficinaRef, sec.id);
           toast.ok("Sección eliminada.");
           await onCambio();
         } catch (err) {
@@ -261,9 +261,9 @@ export default function GestorSecciones({
 
               {!sec.url_externa && (
                 <GestorEnlaces
-                  slug={slug}
+                  oficinaRef={oficinaRef}
                   seccionId={sec.id}
-                  subcarpetaDefault={sec.slug}
+                  subcarpetaDefault={sec.uuid || sec.slug}
                   enlaces={enlaces.filter((en) => en.seccion_id === sec.id)}
                   onCambio={onCambio}
                 />

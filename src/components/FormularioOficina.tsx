@@ -51,7 +51,7 @@ export default function FormularioOficina({
             type="text"
             value={form.slug ?? ""}
             onChange={(e) => onCampo("slug", e.target.value)}
-            placeholder="se genera del título"
+            placeholder="oficina-xxxxxxxx"
             maxLength={160}
             disabled={!esNuevo}
           />

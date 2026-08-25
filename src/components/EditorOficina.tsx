@@ -15,15 +15,15 @@ import GestorEnlaces from "./GestorEnlaces";
  * creadas, administra sus secciones (botones de acción) y enlaces directos.
  */
 export default function EditorOficina({
-  slug,
+  refId,
   onVolver,
   onCreado,
 }: {
-  slug: string; // "" = nueva
+  refId: string; // "" = nueva
   onVolver: () => void;
-  onCreado: (slug: string) => void;
+  onCreado: (uuid: string) => void;
 }) {
-  const esNuevo = slug === "";
+  const esNuevo = refId === "";
   const toast = useToast();
   const [form, setForm] = useState<OficinaInput>(formInicialOficina());
   const [oficina, setOficina] = useState<Oficina | null>(null);
@@ -35,7 +35,7 @@ export default function EditorOficina({
     if (esNuevo) return;
     setCargando(true);
     try {
-      const o = await fetchOficina(slug);
+      const o = await fetchOficina(refId);
       setOficina(o);
       setForm({
         titulo: o.titulo,
@@ -58,7 +58,7 @@ export default function EditorOficina({
     } finally {
       setCargando(false);
     }
-  }, [slug, esNuevo, toast]);
+  }, [refId, esNuevo, toast]);
 
   useEffect(() => {
     cargar();
@@ -81,11 +81,11 @@ export default function EditorOficina({
     setGuardando(true);
     try {
       if (esNuevo) {
-        const nuevoSlug = await crearOficina(form);
+        const creada = await crearOficina(form);
         toast.ok("Oficina creada.");
-        onCreado(nuevoSlug);
+        onCreado(creada.uuid);
       } else {
-        await actualizarOficina(slug, form);
+        await actualizarOficina(refId, form);
         toast.ok("Cambios guardados.");
         await cargar();
       }
@@ -154,9 +154,9 @@ export default function EditorOficina({
                     </div>
                   </div>
                   <GestorEnlaces
-                    slug={oficina.slug}
+                    oficinaRef={oficina.uuid || oficina.slug}
                     seccionId={null}
-                    subcarpetaDefault={oficina.slug}
+                    subcarpetaDefault={oficina.uuid || oficina.slug}
                     enlaces={enlacesSueltos}
                     onCambio={cargar}
                   />
@@ -167,13 +167,12 @@ export default function EditorOficina({
                     <div>
                       <h3>Botones de acción (secciones)</h3>
                       <p className="seccion-sub">
-                        Cada sección es un botón al pie de la oficina con su propia
-                        lista de documentos.
+                        Cada botón abre un bloque temático con su propia lista de documentos.
                       </p>
                     </div>
                   </div>
                   <GestorSecciones
-                    slug={oficina.slug}
+                    oficinaRef={oficina.uuid || oficina.slug}
                     secciones={oficina.secciones}
                     enlaces={oficina.enlaces}
                     onCambio={cargar}

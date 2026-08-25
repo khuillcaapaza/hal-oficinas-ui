@@ -41,7 +41,7 @@ describe("GestorEnlaces", () => {
   it("registra un enlace externo", async () => {
     render(
       <GestorEnlaces
-        slug="portal"
+        oficinaRef="portal"
         seccionId={5}
         subcarpetaDefault="planeamiento"
         enlaces={[]}
@@ -67,7 +67,7 @@ describe("GestorEnlaces", () => {
 
   it("valida que el título sea obligatorio", async () => {
     render(
-      <GestorEnlaces slug="portal" seccionId={null} subcarpetaDefault="portal" enlaces={[]} onCambio={vi.fn()} />,
+      <GestorEnlaces oficinaRef="portal" seccionId={null} subcarpetaDefault="portal" enlaces={[]} onCambio={vi.fn()} />,
       { wrapper: ToastProvider },
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "enlace");
@@ -80,7 +80,7 @@ describe("GestorEnlaces", () => {
   it("lista y elimina un enlace existente", async () => {
     render(
       <GestorEnlaces
-        slug="portal"
+        oficinaRef="portal"
         seccionId={null}
         subcarpetaDefault="portal"
         enlaces={[enlaceExterno]}

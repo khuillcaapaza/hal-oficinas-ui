@@ -46,6 +46,7 @@ export interface Enlace {
 /** Una sección (botón de acción) al pie de una oficina. */
 export interface Seccion {
   id: number;
+  uuid: string;
   slug: string;
   titulo: string;
   descripcion: string;
@@ -63,6 +64,7 @@ export interface Autoridad {
 /** Metadatos de una oficina (listado admin). */
 export interface OficinaMeta {
   id: number;
+  uuid: string;
   slug: string;
   titulo: string;
   categoria: string;
@@ -98,6 +100,11 @@ export interface Oficina extends OficinaMeta {
   autoridades: Autoridad[];
   secciones: Seccion[];
   enlaces: Enlace[];
+}
+
+export interface ReordenItem {
+  uuid: string;
+  orden: number;
 }
 
 /** Datos del formulario para crear/editar una oficina. */

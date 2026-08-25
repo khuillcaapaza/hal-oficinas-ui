@@ -190,10 +190,10 @@ describe("oficinas (admin)", () => {
     expect(mocks.instance.get).toHaveBeenCalledWith("/admin/oficinas/a%20b");
   });
 
-  it("crearOficina devuelve el slug", async () => {
-    mocks.instance.post.mockResolvedValue({ data: { slug: "nueva" } });
-    const slug = await api.crearOficina({} as never);
-    expect(slug).toBe("nueva");
+  it("crearOficina devuelve uuid y slug", async () => {
+    mocks.instance.post.mockResolvedValue({ data: { uuid: "u-1", slug: "nueva" } });
+    const creada = await api.crearOficina({} as never);
+    expect(creada).toEqual({ uuid: "u-1", slug: "nueva" });
     expect(mocks.instance.post).toHaveBeenCalledWith("/admin/oficinas", expect.any(Object));
   });
 
@@ -215,8 +215,8 @@ describe("oficinas (admin)", () => {
   it("reordenarOficinas", async () => {
     mocks.instance.put.mockResolvedValue({ data: {} });
     const items = [
-      { slug: "administracion", orden: 0 },
-      { slug: "gestion-calidad", orden: 1 },
+      { uuid: "a1", orden: 0 },
+      { uuid: "a2", orden: 1 },
     ];
 
     await api.reordenarOficinas(items);

@@ -7,6 +7,7 @@ import type {
   OficinaMeta,
   OficinasPagina,
   PaginacionMeta,
+  ReordenItem,
   SeccionInput,
   UploadResult,
   Usuario,
@@ -83,31 +84,31 @@ export async function fetchOficinas(page = 1, perPage = 6): Promise<OficinasPagi
   return { items: data.oficinas, meta: data.meta };
 }
 
-export async function fetchOficina(slug: string): Promise<Oficina> {
+export async function fetchOficina(ref: string): Promise<Oficina> {
   const { data } = await http.get<{ oficina: Oficina }>(
-    `/admin/oficinas/${encodeURIComponent(slug)}`
+    `/admin/oficinas/${encodeURIComponent(ref)}`
   );
   return data.oficina;
 }
 
-export async function crearOficina(input: OficinaInput): Promise<string> {
-  const { data } = await http.post<{ slug: string }>("/admin/oficinas", input);
-  return data.slug;
+export async function crearOficina(input: OficinaInput): Promise<{ uuid: string; slug: string }> {
+  const { data } = await http.post<{ uuid: string; slug: string }>("/admin/oficinas", input);
+  return data;
 }
 
 export async function actualizarOficina(
-  slug: string,
+  ref: string,
   input: OficinaInput
 ): Promise<void> {
-  await http.put(`/admin/oficinas/${encodeURIComponent(slug)}`, input);
+  await http.put(`/admin/oficinas/${encodeURIComponent(ref)}`, input);
 }
 
-export async function eliminarOficina(slug: string): Promise<void> {
-  await http.delete(`/admin/oficinas/${encodeURIComponent(slug)}`);
+export async function eliminarOficina(ref: string): Promise<void> {
+  await http.delete(`/admin/oficinas/${encodeURIComponent(ref)}`);
 }
 
 export async function reordenarOficinas(
-  items: Array<{ slug: string; orden: number }>
+  items: ReordenItem[]
 ): Promise<void> {
   await http.put("/admin/oficinas/reordenar", { items });
 }
@@ -115,57 +116,57 @@ export async function reordenarOficinas(
 // ── Secciones ──────────────────────────────────────────────────────────
 
 export async function crearSeccion(
-  slug: string,
+  ref: string,
   input: SeccionInput
 ): Promise<number> {
   const { data } = await http.post<{ id: number }>(
-    `/admin/oficinas/${encodeURIComponent(slug)}/secciones`,
+    `/admin/oficinas/${encodeURIComponent(ref)}/secciones`,
     input
   );
   return data.id;
 }
 
 export async function actualizarSeccion(
-  slug: string,
+  ref: string,
   id: number,
   input: SeccionInput
 ): Promise<void> {
   await http.put(
-    `/admin/oficinas/${encodeURIComponent(slug)}/secciones/${id}`,
+    `/admin/oficinas/${encodeURIComponent(ref)}/secciones/${id}`,
     input
   );
 }
 
-export async function eliminarSeccion(slug: string, id: number): Promise<void> {
-  await http.delete(`/admin/oficinas/${encodeURIComponent(slug)}/secciones/${id}`);
+export async function eliminarSeccion(ref: string, id: number): Promise<void> {
+  await http.delete(`/admin/oficinas/${encodeURIComponent(ref)}/secciones/${id}`);
 }
 
 // ── Enlaces ────────────────────────────────────────────────────────────
 
 export async function crearEnlace(
-  slug: string,
+  ref: string,
   input: EnlaceInput
 ): Promise<number> {
   const { data } = await http.post<{ id: number }>(
-    `/admin/oficinas/${encodeURIComponent(slug)}/enlaces`,
+    `/admin/oficinas/${encodeURIComponent(ref)}/enlaces`,
     input
   );
   return data.id;
 }
 
 export async function actualizarEnlace(
-  slug: string,
+  ref: string,
   id: number,
   input: EnlaceUpdate
 ): Promise<void> {
   await http.put(
-    `/admin/oficinas/${encodeURIComponent(slug)}/enlaces/${id}`,
+    `/admin/oficinas/${encodeURIComponent(ref)}/enlaces/${id}`,
     input
   );
 }
 
-export async function eliminarEnlace(slug: string, id: number): Promise<void> {
-  await http.delete(`/admin/oficinas/${encodeURIComponent(slug)}/enlaces/${id}`);
+export async function eliminarEnlace(ref: string, id: number): Promise<void> {
+  await http.delete(`/admin/oficinas/${encodeURIComponent(ref)}/enlaces/${id}`);
 }
 
 // ── Subida directa a hal-archivos-api (colección "oficinas") ───────────
